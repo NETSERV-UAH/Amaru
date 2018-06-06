@@ -1,0 +1,651 @@
+OMNeT++ Discrete Event Simulation  (C) 1992-2017 Andras Varga, OpenSim Ltd.
+Version: 5.3, build: 180411-87513e3, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+
+Setting up Cmdenv...
+
+Loading NED files from ../simulations:  2
+Loading NED files from .:  3
+
+Preparing for running configuration General, run #0...
+Assigned runID=General-0-20180606-22:13:23-23153
+Setting up network "Figure1"...
+Initializing...
+I am the SDN Controller. Sending out CoI through port: 0
+Initializing... switch: s1 number of ports: 3
+Initializing... switch: s2 number of ports: 3
+Initializing... switch: s3 number of ports: 2
+Initializing... switch: s4 number of ports: 3
+Initializing... switch: s5 number of ports: 4
+Initializing... switch: s6 number of ports: 3
+Initializing... switch: s7 number of ports: 2
+Initializing... switch: s8 number of ports: 3
+Initializing... switch: s9 number of ports: 2
+
+Running simulation...
+** Event #0   t=0   Elapsed: 8e-06s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 1   present: 1   in FES: 1
+Message arrived. Node:  s1 Message Type: CoI
+AMAC is 0 from SDN Controller for port 0
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 0
+0.1.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 1
+0.2.
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 0
+0.1.1.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 2
+0.1.2.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 0
+0.2.0.
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 1
+0.2.2.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 1
+0.1.1.1.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 0
+0.1.2.0.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 0
+0.1.2.1.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 2
+0.1.2.3.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 0
+0.2.0.1.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 2
+0.2.0.2.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 2
+0.2.0.3.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.1.1.1.0.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 1
+0.1.1.1.2.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.2.0.1.
+AMAC 0.1.2.0.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 1
+0.1.2.0.2.
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.1.2.1.1.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 1
+0.1.2.1.2.
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.1.2.3.0.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 0
+0.1.2.3.1.
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.2.0.1.1.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 1
+0.2.0.1.2.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.0.2.0.
+AMAC 0.2.0.2.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 0
+0.2.0.2.1.
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.2.0.3.0.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 0
+0.2.0.3.1.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.1.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.2.2.0.2.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.0.0.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.2.
+AMAC 0.1.1.1.0.2.
+not loop free. Originated from 0.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.3.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 1
+0.1.1.1.2.0.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 0
+0.1.2.0.2.0.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.1.2.1.1.0.
+AMAC 0.1.2.1.1.0.
+not loop free. Originated from 0.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 1
+0.1.2.1.2.0.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.1.2.3.0.1.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 2
+0.1.2.3.1.1.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.2.0.1.1.0.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 1
+0.2.0.1.2.0.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 1
+0.2.0.2.1.1.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.2.0.3.0.1.
+AMAC 0.2.0.3.0.1.
+not loop free. Originated from 0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 2
+0.2.0.3.1.1.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.1.1.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.2.0.
+AMAC 0.2.2.0.2.0.
+not loop free. Originated from 0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.2.1.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.2.2.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.0.1.
+AMAC 0.1.1.1.0.0.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 1
+0.1.1.1.0.0.2.
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.0.3.0.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.0.3.1.
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.2.0.0.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.1.1.1.2.0.2.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 0
+0.1.2.0.2.0.1.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.1.2.0.2.0.2.
+AMAC 0.1.2.0.2.0.2.
+not loop free. Originated from 0.1.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.1.2.1.2.0.0.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.1.2.1.2.0.2.
+AMAC 0.1.2.1.2.0.2.
+not loop free. Originated from 0.1.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 0
+0.1.2.3.0.1.0.
+AMAC 0.1.2.3.0.1.0.
+not loop free. Originated from 0.1.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.2.3.0.1.1.
+AMAC 0.1.2.3.0.1.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.1.2.3.1.1.0.
+AMAC 0.1.2.3.1.1.0.
+not loop free. Originated from 0.1.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.1.2.3.1.1.1.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.0.1.1.0.0.
+AMAC 0.2.0.1.1.0.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 2
+0.2.0.1.1.0.2.
+AMAC 0.2.0.1.1.0.2.
+not loop free. Originated from 0.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.2.0.1.2.0.0.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.2.0.1.2.0.2.
+AMAC 0.2.0.1.2.0.2.
+not loop free. Originated from 0.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.2.0.2.1.1.0.
+AMAC 0.2.0.2.1.1.0.
+not loop free. Originated from 0.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 1
+0.2.0.2.1.1.2.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.2.0.3.1.1.0.
+AMAC 0.2.0.3.1.1.0.
+not loop free. Originated from 0.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.2.0.3.1.1.1.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.1.1.0.
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.1.1.1.
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.1.1.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.1.2.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.2.0.
+AMAC 0.2.2.0.2.2.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.2.2.1.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.0.0.2.0.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.3.0.1.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.3.1.1.
+AMAC 0.1.1.1.0.3.1.1.
+not loop free. Originated from 0.1.1.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.2.0.0.1.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.2.0.2.0.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.2.0.2.1.
+AMAC 0.1.1.1.2.0.2.1.
+not loop free. Originated from 0.1.1.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.2.0.2.2.
+AMAC 0.1.1.1.2.0.2.2.
+not loop free. Originated from 0.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 2
+0.1.2.0.2.0.1.1.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.1.2.1.2.0.0.1.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.1.2.3.1.1.1.0.
+AMAC 0.1.2.3.1.1.1.0.
+not loop free. Originated from 0.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.2.0.1.2.0.0.1.
+AMAC 0.2.0.1.2.0.0.1.
+not loop free. Originated from 0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 1
+0.2.0.2.1.1.2.0.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.2.0.3.1.1.1.0.
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.1.1.0.0.
+AMAC 0.2.2.0.1.1.0.0.
+not loop free. Originated from 0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.1.1.0.2.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.1.1.0.3.
+AMAC 0.2.2.0.1.1.0.3.
+not loop free. Originated from 0.2.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.1.1.1.0.
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.1.1.0.
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.1.2.0.
+AMAC 0.2.2.0.2.1.2.0.
+not loop free. Originated from 0.2.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.2.1.1.
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.0.0.2.0.1.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.1.1.1.0.0.2.0.2.
+AMAC 0.1.1.1.0.0.2.0.2.
+not loop free. Originated from 0.1.1.1.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.0.3.0.1.0.
+AMAC 0.1.1.1.0.3.0.1.0.
+not loop free. Originated from 0.1.1.1.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.3.0.1.1.
+AMAC 0.1.1.1.0.3.0.1.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.2.0.0.1.0.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.2.0.0.1.1.
+AMAC 0.1.1.1.2.0.0.1.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.2.0.2.0.1.
+AMAC 0.1.1.1.2.0.2.0.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 1
+0.1.1.1.2.0.2.0.2.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.1.2.0.2.0.1.1.0.
+AMAC 0.1.2.0.2.0.1.1.0.
+not loop free. Originated from 0.1.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 1
+0.1.2.0.2.0.1.1.1.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 0
+0.1.2.1.2.0.0.1.0.
+AMAC 0.1.2.1.2.0.0.1.0.
+not loop free. Originated from 0.1.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 2
+0.1.2.1.2.0.0.1.1.
+AMAC 0.1.2.1.2.0.0.1.1.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s7 Message Type: AMAC
+AMAC received for port 0
+0.2.0.2.1.1.2.0.0.
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 3
+0.2.0.2.1.1.2.0.2.
+AMAC 0.2.0.2.1.1.2.0.2.
+not loop free. Originated from 0.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.0.3.1.1.1.0.0.
+AMAC 0.2.0.3.1.1.1.0.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 2
+0.2.0.3.1.1.1.0.2.
+AMAC 0.2.0.3.1.1.1.0.2.
+not loop free. Originated from 0.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.1.1.0.2.0.
+AMAC 0.2.2.0.1.1.0.2.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s3 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.1.1.0.2.1.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.1.1.1.0.0.
+AMAC 0.2.2.0.1.1.1.0.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.1.1.1.0.2.
+Message arrived. Node:  s1 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.1.1.0.0.
+AMAC 0.2.2.0.2.1.1.0.0.
+not loop free. Originated from 0.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.2.1.1.0.2.
+AMAC 0.2.2.0.2.1.1.0.2.
+not loop free. Originated from 0.2.2.0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s5 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.2.1.1.0.
+AMAC 0.2.2.0.2.2.1.1.0.
+not loop free. Originated from 0.2.2.0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s9 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.2.1.1.2.
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.0.0.2.0.1.1.
+AMAC 0.1.1.1.0.0.2.0.1.1.
+not loop free. Originated from 0.1.1.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.2.0.0.1.0.1.
+AMAC 0.1.1.1.2.0.0.1.0.1.
+not loop free. Originated from 0.1.1.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.2.0.0.1.0.2.
+AMAC 0.1.1.1.2.0.0.1.0.2.
+not loop free. Originated from 0.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 2
+0.1.1.1.2.0.0.1.0.3.
+AMAC 0.1.1.1.2.0.0.1.0.3.
+not loop free. Originated from 0.1.1.1.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 0
+0.1.1.1.2.0.2.0.2.0.
+AMAC 0.1.1.1.2.0.2.0.2.0.
+not loop free. Originated from 0.1.1.1.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s2 Message Type: AMAC
+AMAC received for port 1
+0.1.2.0.2.0.1.1.1.0.
+AMAC 0.1.2.0.2.0.1.1.1.0.
+not loop free. Originated from 0.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 2
+0.2.0.2.1.1.2.0.0.1.
+AMAC 0.2.0.2.1.1.2.0.0.1.
+not loop free. Originated from 0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.1.1.0.2.1.1.
+AMAC 0.2.2.0.1.1.0.2.1.1.
+not loop free. Originated from 0.2.2.0.1.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s4 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.1.1.1.0.2.0.
+AMAC 0.2.2.0.1.1.1.0.2.0.
+not loop free. Originated from 0.2.
+
+Discarding loop AMAC
+Message arrived. Node:  s6 Message Type: AMAC
+AMAC received for port 0
+0.2.2.0.1.1.1.0.2.1.
+AMAC 0.2.2.0.1.1.1.0.2.1.
+not loop free. Originated from 0.2.2.0.1.1.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 2
+0.2.2.0.1.1.1.0.2.3.
+AMAC 0.2.2.0.1.1.1.0.2.3.
+not loop free. Originated from 0.2.2.0.
+
+Discarding loop AMAC
+Message arrived. Node:  s8 Message Type: AMAC
+AMAC received for port 1
+0.2.2.0.2.2.1.1.2.0.
+AMAC 0.2.2.0.2.2.1.1.2.0.
+not loop free. Originated from 0.2.2.0.
+
+Discarding loop AMAC
+** Event #133   t=10   Elapsed: 0.001101s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 133   present: 0   in FES: 0
+
+<!> No more events, simulation completed -- at t=10s, event #133
+
+Calling finish() at end of Run #0...
+
+End.
