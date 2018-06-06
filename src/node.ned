@@ -20,5 +20,5 @@ simple node
     parameters:
         string portstatus = default("");
     gates:
-        inout port[8] @loose;
+        inout port[] @loose;
 }
