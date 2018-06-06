@@ -18,7 +18,7 @@ package amaru;
 simple sdnController
 {
     parameters:
-        string hello;
+        string hello=default("");
     gates:
-        inout port[8] @loose;
+        inout port[] @loose;
 }
