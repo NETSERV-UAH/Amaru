@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <math.h>
-
+#include "AFrame_m.h"
 using namespace omnetpp;
 
 class sdnController : public cSimpleModule
@@ -22,13 +22,16 @@ void sdnController::initialize()
     //Notify every connected nodes that they are connected directly to an SDN Controller
     for(int i=0; i<numberOfPorts; i++)
     {
-        cMessage *msg = new cMessage("CoI");
-        send(msg, "port$o", i);
+        AFrame *aFrame = new AFrame("CoI");
+        std::cout<<"I am the SDN Controller. Sending out CoI through port: "<<i<<"\n";
+        aFrame->setLevel(1);
+        aFrame->setAMAC(0,i);
+        send(aFrame, "port$o", i);
     }
 }
 void sdnController::handleMessage(cMessage *msg)
 {
-
+    delete msg;
 }
 
 void sdnController::finish()
