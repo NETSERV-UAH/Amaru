@@ -7,18 +7,18 @@ Amaru: Guaranteed resiliency for in-band control in SDN
 
 > $ su
 
-1. cd to src directory
+2. cd to src directory
 
 > \# cd /home/user/Amaru/src (change /home/user/Amaru/src according to your src path)
 
-1. Ensure that OMNeT++ bin directory is included in $PATH
+3. Ensure that OMNeT++ bin directory is included in $PATH
 
 > \# export PATH=/home/user/omnetpp/bin:$PATH (change /home/user/omnetpp/bin according to your OMNeT++ bin directory path)
 
-1. make
+4. make
 
 > \# make
 
-1. Run the simulation
+5. Run the simulation
 
 > \# ./Amaru -u Cmdenv -n ../simulations:. -f ../simulations/omnetpp.ini
