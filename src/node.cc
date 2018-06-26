@@ -10,7 +10,10 @@ class node : public cSimpleModule
 {
   private:
     int numberOfPorts;
+    int numberOfLearnedAMACs=0; //Keep track of AMACs learned so far
     bool isARoot;
+    int N=3; //Max number of AMACs - When a switch reaches this number (if set to nonzero), it starts discarding new frames and does not learn anymore.
+    int L=3; //L: Preffix variation length - learn the N (if set to nonzero) first that vary in the prefix of length L
     static const int depth=16;
     static const int breadth=8;
     struct AMAC
@@ -33,6 +36,7 @@ class node : public cSimpleModule
     virtual void processAFrame(int arrivalPort, AFrame* aFrame);
     virtual bool isLoopFreeAMAC(AMAC aMAC);
     virtual void printAMAC(AMAC aMAC);
+    virtual void printAllAMAC();
     virtual void printAMAC(AFrame* aFrame);
 };
 // The module class needs to be registered with OMNeT++
@@ -94,7 +98,8 @@ bool node::isLoopFreeAMAC(AMAC aMAC)
                 if(portAMAC.level<=aMAC.level)
                 {
                     bool prefixMatch=true;
-                    for(int k=0;k<portAMAC.level;k++)
+                    int maxSearchLevel=(L==0?portAMAC.level:L);
+                    for(int k=0;k<maxSearchLevel;k++)
                     {
                         if(portAMAC.octets[k]!=aMAC.octets[k])
                         {
@@ -136,25 +141,51 @@ void node::printAMAC(AFrame *aFrame)
     std::cout<<std::endl;
 }
 
+void node::printAllAMAC()
+{
+    for(int i=0;i<breadth;i++)//check AMAClist of each port to see if received AMAC was originated from this switch
+    {
+        if(portAMACListArray[i]!=nullptr)
+        {
+            std::cout<<"\tPort "<<i<<std::endl;
+            std::vector<AMAC> *portAMACList=portAMACListArray[i];
+            for(int j=0;j<portAMACList->size();j++)//check all AMAC associated with this port
+            {
+                std::cout<<"\t\tAMAC "<<j<<": ";
+                AMAC portAMAC=portAMACList->at(j);
+                printAMAC(portAMAC);
+            }
+        }
+    }    
+}
+
 void node::processAFrame(int arrivalPort, AFrame* aFrame)
 {
 	AMAC aMAC;
 	int receivedLevel=aFrame->getLevel();
 	aMAC.level=receivedLevel;
-	for(int i=0;i<receivedLevel;i++)
+	for(int i=0;i<receivedLevel;i++)//Copy octets
 	{
 		aMAC.octets[i]=aFrame->getAMAC(i);
 	}
 	bool amacIsLoopFree=isLoopFreeAMAC(aMAC);//Check if AMAC is loop free
 	if(amacIsLoopFree)
 	{
-        if(portAMACListArray[arrivalPort]==nullptr)
-        {
-            portAMACListArray[arrivalPort]=new std::vector<AMAC>();
-        }
-        portAMACListArray[arrivalPort]->push_back(aMAC);//add AMAC to port
-        if(aMAC.level<depth)
-            broadcastAFrame(aMAC, arrivalPort);//Send out to all ports except the receiving port
+            if(N<=0 || numberOfLearnedAMACs<N)
+            {
+                if(portAMACListArray[arrivalPort]==nullptr)
+                {
+                    portAMACListArray[arrivalPort]=new std::vector<AMAC>();
+                }
+                portAMACListArray[arrivalPort]->push_back(aMAC);//add AMAC to port
+                numberOfLearnedAMACs++;
+                if(aMAC.level<depth)
+                    broadcastAFrame(aMAC, arrivalPort);//Send out to all ports except the receiving port
+            }
+            else
+            {
+                std::cout<<"Not learning due to max number of AMAC ("<<N<<") already learned."<<std::endl;
+            }
 	}
 	else
 	{
@@ -200,6 +231,8 @@ void node::broadcastAFrame(AMAC aMAC, int arrivalPort)
 
 void node::finish()
 {
+    std::cout<<"Printing AMAC list for node "<<getName()<<std::endl;
+    printAllAMAC();
     for(int i=0;i<breadth;i++)//free allocated memory for AMAC list from each port
     {
         if(portAMACListArray[i]!=nullptr)
