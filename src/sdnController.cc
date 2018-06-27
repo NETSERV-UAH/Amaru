@@ -28,6 +28,15 @@ void sdnController::initialize()
         aFrame->setAMAC(0,i);
         send(aFrame, "port$o", i);
     }
+    
+    //send test C2S message: will be moved from here
+    AFrame* aFrame1=new AFrame("C2S");
+    aFrame1->setLevel(4);
+    aFrame1->setAMAC(0,0);
+    aFrame1->setAMAC(1,2);
+    aFrame1->setAMAC(2,2);
+    aFrame1->setAMAC(3,0);                
+    sendDelayed(aFrame1, 20, "port$o", 0); 
 }
 void sdnController::handleMessage(cMessage *msg)
 {
