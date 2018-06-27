@@ -35,6 +35,7 @@ class node : public cSimpleModule
     virtual void broadcastAFrame(AMAC aMAC, int arrivalPort);
     virtual void processAFrame(int arrivalPort, AFrame* aFrame);
     virtual bool isLoopFreeAMAC(AMAC aMAC);
+    virtual int getNextHopUpstream(AMAC aMAC);
     virtual void printAMAC(AMAC aMAC);
     virtual void printAllAMAC();
     virtual void printAMAC(AFrame* aFrame);
@@ -51,12 +52,30 @@ void node::initialize()
     {
         portAMACListArray[i]=nullptr;
     }
+    
+    if(strcmp(getName(),"s9")==0)//test S2C message; will be moved from here
+    {            
+        AFrame* aFrame1=new AFrame("S2C");
+        aFrame1->setLevel(5);
+        aFrame1->setAMAC(0,0);
+        aFrame1->setAMAC(1,1);
+        aFrame1->setAMAC(2,2);
+        aFrame1->setAMAC(3,1);
+        aFrame1->setAMAC(4,2);            
+        scheduleAt(10, aFrame1);                    
+    }
 }
 void node::handleMessage(cMessage *msg)
-{
-    EV<<"Message arrived "<<msg->getName()<<"\n";
+{    
     std::cout<<"Message arrived. Node:  "<<getName()<<" Message Type: "<<msg->getName()<<std::endl;
-    int arrivalPort=msg->getArrivalGate()->getIndex();
+    int arrivalPort;
+    try{
+        if(strcmp(msg->getName(),"S2C")!=0)
+            arrivalPort=msg->getArrivalGate()->getIndex();
+    }catch(...)
+    {
+    }
+    
     AFrame* aFrame=(AFrame*)msg;
 
     if(strcmp(msg->getName(),"CoI")==0)//Directly connected to an SDN Controller
@@ -81,6 +100,21 @@ void node::handleMessage(cMessage *msg)
         std::cout<<"AMAC received for port "<<arrivalPort<<"\n";
         printAMAC(aFrame);
         processAFrame(arrivalPort, aFrame);
+    }
+    else if(strcmp(msg->getName(),"S2C")==0)
+    {     
+        AMAC aMAC1;
+	int receivedLevel=aFrame->getLevel();
+	aMAC1.level=receivedLevel;
+	for(int i=0;i<receivedLevel;i++)//Copy octets
+	{
+		aMAC1.octets[i]=aFrame->getAMAC(i);
+	}
+        int nextHop = getNextHopUpstream(aMAC1);
+        //std::cout<<"S2C message arrived at "<<getName()<<": sending AFrame with AMAC ";
+        //printAMAC(aMAC1);
+        //std::cout<<" to port "<<nextHop<<std::endl;
+        send(aFrame, "port$o", nextHop);
     }
 }
 
@@ -129,7 +163,7 @@ void node::printAMAC(AMAC aMAC)
     {
         std::cout<<aMAC.octets[i]<<".";
     }
-    std::cout<<std::endl;
+    //std::cout<<std::endl;
 }
 
 void node::printAMAC(AFrame *aFrame)
@@ -138,7 +172,7 @@ void node::printAMAC(AFrame *aFrame)
     {
         std::cout<<aFrame->getAMAC(i)<<".";
     }
-    std::cout<<std::endl;
+    //std::cout<<std::endl;
 }
 
 void node::printAllAMAC()
@@ -154,9 +188,52 @@ void node::printAllAMAC()
                 std::cout<<"\t\tAMAC "<<j<<": ";
                 AMAC portAMAC=portAMACList->at(j);
                 printAMAC(portAMAC);
+                std::cout<<std::endl;
             }
         }
     }    
+}
+
+int node::getNextHopUpstream(AMAC aMAC)
+{
+    int nextHopUpstream=-1;
+    std::cout<<"getNextHopUpstream. Got AMAC ";
+    printAMAC(aMAC);
+    std::cout<<std::endl;
+    for(int i=0;i<breadth;i++)//check AMAClist of each port to see if received AMAC was originated from this switch
+    {
+        if(portAMACListArray[i]!=nullptr)
+        {
+            std::vector<AMAC> *portAMACList=portAMACListArray[i];
+            for(int j=0;j<portAMACList->size();j++)//check all AMAC associated with this port
+            {
+                AMAC portAMAC=portAMACList->at(j);
+                //std::cout<<"Matching with port AMAC ";
+                //printAMAC(portAMAC);
+                //std::cout<<std::endl;
+                if(portAMAC.level<=aMAC.level)//both level will be equal only in case of self message, otherwise port level will be less than message level
+                {
+                    bool prefixMatch=true;                    
+                    for(int k=0;k<portAMAC.level;k++)
+                    {
+                        if(portAMAC.octets[k]!=aMAC.octets[k])
+                        {
+                            prefixMatch=false;
+                            break;
+                        }
+                    }
+                    if(prefixMatch)
+                    {
+                        nextHopUpstream=i;
+                        std::cout<<"Next upstream hop for AMAC ";
+                        printAMAC(aMAC);
+                        std::cout<<"is "<<nextHopUpstream<<std::endl;                        
+                    }
+                }
+            }
+        }
+    }
+    return nextHopUpstream;
 }
 
 void node::processAFrame(int arrivalPort, AFrame* aFrame)
