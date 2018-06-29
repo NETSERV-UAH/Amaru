@@ -310,7 +310,7 @@ void node::processAFrame(int arrivalPort, AFrame* aFrame)
 	bool amacIsLoopFree=isLoopFreeAMAC(aMAC);//Check if AMAC is loop free
 	if(amacIsLoopFree)
 	{
-            if(N<=0 || numberOfLearnedAMACs<N)
+            if(N<=0 || numberOfLearnedAMACs<N)//Skip if we have already learned N AMACs
             {
                 if(portAMACListArray[arrivalPort]==nullptr)
                 {
