@@ -60,27 +60,20 @@ void node::initialize()
         aFrame1->setLevel(5);
         aFrame1->setAMAC(0,0);
         aFrame1->setAMAC(1,1);
-        aFrame1->setAMAC(2,2);
+        aFrame1->setAMAC(2,1);
         aFrame1->setAMAC(3,1);
-        aFrame1->setAMAC(4,2);            
-        scheduleAt(10, aFrame1);                    
+        aFrame1->setAMAC(4,2);
+        scheduleAt(10, aFrame1);
     }
 }
 void node::handleMessage(cMessage *msg)
 {    
     std::cout<<"Message arrived. Node:  "<<getName()<<" Message Type: "<<msg->getName()<<std::endl;
-    int arrivalPort;
-    try{
-        if(strcmp(msg->getName(),"S2C")!=0)
-            arrivalPort=msg->getArrivalGate()->getIndex();
-    }catch(...)
-    {
-    }
-    
-    AFrame* aFrame=(AFrame*)msg;
 
     if(strcmp(msg->getName(),"CoI")==0)//Directly connected to an SDN Controller
     {
+        int arrivalPort=msg->getArrivalGate()->getIndex();
+        AFrame* aFrame=(AFrame*)msg;
         isARoot=true;
         int receivedAMAC=aFrame->getAMAC(0);
         AMAC aMAC;
@@ -98,34 +91,39 @@ void node::handleMessage(cMessage *msg)
     }
     else if(strcmp(msg->getName(),"AMAC")==0)
     {
+        int arrivalPort=msg->getArrivalGate()->getIndex();
+        AFrame* aFrame=(AFrame*)msg;
         std::cout<<"AMAC received for port "<<arrivalPort<<"\n";
         printAMAC(aFrame);
         processAFrame(arrivalPort, aFrame);
     }
     else if(strcmp(msg->getName(),"S2C")==0)
     {     
+        AFrame* aFrame=(AFrame*)msg;
         AMAC aMAC1;
-	int receivedLevel=aFrame->getLevel();
-	aMAC1.level=receivedLevel;
-	for(int i=0;i<receivedLevel;i++)//Copy octets
-	{
-		aMAC1.octets[i]=aFrame->getAMAC(i);
-	}
+        int receivedLevel=aFrame->getLevel();
+        aMAC1.level=receivedLevel;
+        for(int i=0;i<receivedLevel;i++)//Copy octets
+        {
+            aMAC1.octets[i]=aFrame->getAMAC(i);
+        }
         int nextHop = getNextHopUpstream(aMAC1);
-        //std::cout<<"S2C message arrived at "<<getName()<<": sending AFrame with AMAC ";
-        //printAMAC(aMAC1);
-        //std::cout<<" to port "<<nextHop<<std::endl;
+        std::cout<<"S2C message arrived at "<<getName()<<": sending AFrame with AMAC ";
+        printAMAC(aMAC1);
+        std::cout<<" to port "<<nextHop<<std::endl;
         send(aFrame, "port$o", nextHop);
     }
     else if(strcmp(msg->getName(),"C2S")==0)
     {     
+        int arrivalPort=msg->getArrivalGate()->getIndex();
+        AFrame* aFrame=(AFrame*)msg;
         AMAC aMAC1;
-	int receivedLevel=aFrame->getLevel();
-	aMAC1.level=receivedLevel;
-	for(int i=0;i<receivedLevel;i++)//Copy octets
-	{
-		aMAC1.octets[i]=aFrame->getAMAC(i);
-	}
+        int receivedLevel=aFrame->getLevel();
+        aMAC1.level=receivedLevel;
+        for(int i=0;i<receivedLevel;i++)//Copy octets
+        {
+            aMAC1.octets[i]=aFrame->getAMAC(i);
+        }
         int nextHop = getNextHopDownstream(aMAC1, arrivalPort);
         //std::cout<<"S2C message arrived at "<<getName()<<": sending AFrame with AMAC ";
         //printAMAC(aMAC1);
