@@ -12,9 +12,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
-packet AFrame
+package amaru;
+
+simple pktgen
 {
-    bool addAMAC=true;
-    int level=0;
-    int AMAC[16];
+    parameters:
+        int packetsToSend=default(4);
+        int packetDelay=default(1);
+        double packetSendStartTime=default(20);
+    gates:
+        inout port;
 }
+
+
+
+

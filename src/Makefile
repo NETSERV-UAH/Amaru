@@ -6,8 +6,7 @@
 #
 
 # Name of target to be created (-o option)
-TARGET = Amaru$(D)$(EXE_SUFFIX)
-TARGET_DIR = .
+TARGET = Amaru$(EXE_SUFFIX)
 
 # User interface (uncomment one) (-u option)
 USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(QTENV_LIBS) $(CMDENV_LIBS)
@@ -16,7 +15,7 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(QTENV_LIBS) $(CMDENV_LI
 #USERIF_LIBS = $(QTENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH =
+INCLUDE_PATH = -I.
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -30,18 +29,25 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/node.o $O/sdnController.o $O/AFrame_m.o
+OBJS = \
+    $O/node.o \
+    $O/pktDropper.o \
+    $O/pktgen.o \
+    $O/sdnController.o \
+    $O/AFrame_m.o \
+    $O/CCCom_m.o
 
 # Message files
 MSGFILES = \
-    AFrame.msg
+    AFrame.msg \
+    CCCom.msg
 
 # SM files
 SMFILES =
 
 #------------------------------------------------------------------------------
 
-# Pull in OMNeT++ configuration (Makefile.inc)
+# Pull in OMNeT++ configuration (Makefile.inc or configuser.vc)
 
 ifneq ("$(OMNETPP_CONFIGFILE)","")
 CONFIGFILE = $(OMNETPP_CONFIGFILE)
@@ -60,9 +66,10 @@ endif
 include $(CONFIGFILE)
 
 # Simulation kernel and user interface libraries
-OMNETPP_LIBS = $(OPPMAIN_LIB) $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
+OMNETPP_LIB_SUBDIR = $(OMNETPP_LIB_DIR)/$(TOOLCHAIN_NAME)
+OMNETPP_LIBS = -L"$(OMNETPP_LIB_SUBDIR)" -L"$(OMNETPP_LIB_DIR)" -loppmain$D $(USERIF_LIBS) $(KERNEL_LIBS) $(SYS_LIBS)
 
-COPTS = $(CFLAGS) $(IMPORT_DEFINES)  $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
+COPTS = $(CFLAGS)  $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
 MSGCOPTS = $(INCLUDE_PATH)
 SMCOPTS =
 
@@ -70,8 +77,10 @@ SMCOPTS =
 # so we store COPTS into $COPTS_FILE and have object
 # files depend on it (except when "make depend" was called)
 COPTS_FILE = $O/.last-copts
+ifneq ($(MAKECMDGOALS),depend)
 ifneq ("$(COPTS)","$(shell cat $(COPTS_FILE) 2>/dev/null || echo '')")
 $(shell $(MKPATH) "$O" && echo "$(COPTS)" >$(COPTS_FILE))
+endif
 endif
 
 #------------------------------------------------------------------------------
@@ -81,32 +90,26 @@ endif
 #------------------------------------------------------------------------------
 
 # Main target
-all: $(TARGET_DIR)/$(TARGET)
+all: $O/$(TARGET)
+	$(Q)$(LN) $O/$(TARGET) .
 
-$(TARGET_DIR)/% :: $O/%
-	@mkdir -p $(TARGET_DIR)
-	$(Q)$(LN) $< $@
-ifeq ($(TOOLCHAIN_NAME),clangc2)
-	$(Q)-$(LN) $(<:%.dll=%.lib) $(@:%.dll=%.lib)
-endif
-
-$O/$(TARGET): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile $(CONFIGFILE)
+$O/$(TARGET): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile
 	@$(MKPATH) $O
 	@echo Creating executable: $@
-	$(Q)$(CXX) $(LDFLAGS) -o $O/$(TARGET) $(OBJS) $(EXTRA_OBJS) $(AS_NEEDED_OFF) $(WHOLE_ARCHIVE_ON) $(LIBS) $(WHOLE_ARCHIVE_OFF) $(OMNETPP_LIBS)
+	$(Q)$(CXX) $(LDFLAGS) -o $O/$(TARGET)  $(OBJS) $(EXTRA_OBJS) $(AS_NEEDED_OFF) $(WHOLE_ARCHIVE_ON) $(LIBS) $(WHOLE_ARCHIVE_OFF) $(OMNETPP_LIBS)
 
 .PHONY: all clean cleanall depend msgheaders smheaders
 
 .SUFFIXES: .cc
 
-$O/%.o: %.cc $(COPTS_FILE) | msgheaders smheaders
+$O/%.o: %.cc $(COPTS_FILE)
 	@$(MKPATH) $(dir $@)
 	$(qecho) "$<"
 	$(Q)$(CXX) -c $(CXXFLAGS) $(COPTS) -o $@ $<
 
 %_m.cc %_m.h: %.msg
 	$(qecho) MSGC: $<
-	$(Q)$(MSGC) -s _m.cc -MD -MP -MF $O/$(basename $@).d $(MSGCOPTS) $?
+	$(Q)$(MSGC) -s _m.cc $(MSGCOPTS) $?
 
 %_sm.cc %_sm.h: %.sm
 	$(qecho) SMC: $<
@@ -117,16 +120,28 @@ msgheaders: $(MSGFILES:.msg=_m.h)
 smheaders: $(SMFILES:.sm=_sm.h)
 
 clean:
-	$(qecho) Cleaning $(TARGET)
+	$(qecho) Cleaning...
 	$(Q)-rm -rf $O
-	$(Q)-rm -f $(TARGET_DIR)/$(TARGET)
-	$(Q)-rm -f $(TARGET_DIR)/$(TARGET:%.dll=%.lib)
-	$(Q)-rm -f $(call opp_rwildcard, . , *_m.cc *_m.h *_sm.cc *_sm.h)
+	$(Q)-rm -f Amaru Amaru.exe libAmaru.so libAmaru.a libAmaru.dll libAmaru.dylib
+	$(Q)-rm -f ./*_m.cc ./*_m.h ./*_sm.cc ./*_sm.h
 
-cleanall:
-	$(Q)$(MAKE) -s clean MODE=release
-	$(Q)$(MAKE) -s clean MODE=debug
+cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
-# include all dependencies
--include $(OBJS:%.o=%.d)
+depend:
+	$(qecho) Creating dependencies...
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES) $(SM_CC_FILES)  ./*.cc
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/AFrame_m.o: AFrame_m.cc \
+	AFrame_m.h
+$O/CCCom_m.o: CCCom_m.cc \
+	CCCom_m.h
+$O/node.o: node.cc \
+	AFrame_m.h
+$O/pktDropper.o: pktDropper.cc
+$O/pktgen.o: pktgen.cc \
+	AFrame_m.h
+$O/sdnController.o: sdnController.cc \
+	AFrame_m.h
+

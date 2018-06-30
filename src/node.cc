@@ -12,8 +12,8 @@ class node : public cSimpleModule
     int numberOfPorts;
     int numberOfLearnedAMACs=0; //Keep track of AMACs learned so far
     bool isARoot;
-    int N=3; //Max number of AMACs - When a switch reaches this number (if set to nonzero), it starts discarding new frames and does not learn anymore.
-    int L=3; //L: Preffix variation length - learn the N (if set to nonzero) first that vary in the prefix of length L
+    int N=0; //Max number of AMACs - When a switch reaches this number (if set to nonzero), it starts discarding new frames and does not learn anymore.
+    int L=0; //L: Preffix variation length - learn the N (if set to nonzero) first that vary in the prefix of length L
     static const int depth=16;
     static const int breadth=8;
     struct AMAC
@@ -32,11 +32,14 @@ class node : public cSimpleModule
     virtual void handleMessage(cMessage *msg) override;
     virtual void finish() override;
     virtual void broadcastAFrameAsRoot(int aRoot, int arrivalPort);
-    virtual void broadcastAFrame(AMAC aMAC, int arrivalPort);
+    virtual void broadcastAFrame(AMAC aMAC, int arrivalPort, bool addAMAC=true);
     virtual void processAFrame(int arrivalPort, AFrame* aFrame);
+    virtual bool dismantleAMAC(AMAC aMAC, int arrivalPort);
+    virtual void dismantleAndBroadcastAllAMAC(int failedPort);
     virtual bool isLoopFreeAMAC(AMAC aMAC);
     virtual int getNextHopUpstream(AMAC aMAC);
     virtual int getNextHopDownstream(AMAC aMAC, int arrivalPort);
+    virtual int getFirstAMAC(AFrame* aFrame);
     virtual void printAMAC(AMAC aMAC);
     virtual void printAllAMAC();
     virtual void printAMAC(AFrame* aFrame);
@@ -54,7 +57,7 @@ void node::initialize()
         portAMACListArray[i]=nullptr;
     }
     
-    if(strcmp(getName(),"s9")==0)//test S2C message; will be moved from here
+    /*if(strcmp(getName(),"s9")==0)//test S2C message; will be moved from here
     {            
         AFrame* aFrame1=new AFrame("S2C");
         aFrame1->setLevel(5);
@@ -64,7 +67,7 @@ void node::initialize()
         aFrame1->setAMAC(3,1);
         aFrame1->setAMAC(4,2);
         scheduleAt(10, aFrame1);
-    }
+    }*/
 }
 void node::handleMessage(cMessage *msg)
 {    
@@ -100,18 +103,27 @@ void node::handleMessage(cMessage *msg)
     else if(strcmp(msg->getName(),"S2C")==0)
     {     
         AFrame* aFrame=(AFrame*)msg;
-        AMAC aMAC1;
         int receivedLevel=aFrame->getLevel();
-        aMAC1.level=receivedLevel;
-        for(int i=0;i<receivedLevel;i++)//Copy octets
+        int nextHop;
+        if(receivedLevel==-1)//From pktGen; have to populate aFrame
         {
-            aMAC1.octets[i]=aFrame->getAMAC(i);
+            nextHop=getFirstAMAC(aFrame);
         }
-        int nextHop = getNextHopUpstream(aMAC1);
-        std::cout<<"S2C message arrived at "<<getName()<<": sending AFrame with AMAC ";
-        printAMAC(aMAC1);
-        std::cout<<" to port "<<nextHop<<std::endl;
-        send(aFrame, "port$o", nextHop);
+        else
+        {
+            AMAC aMAC1;
+            aMAC1.level=receivedLevel;
+            for(int i=0;i<receivedLevel;i++)//Copy octets
+            {
+                aMAC1.octets[i]=aFrame->getAMAC(i);
+            }
+            nextHop = getNextHopUpstream(aMAC1);
+        }
+        //std::cout<<"S2C message arrived at "<<getName()<<": sending AFrame with AMAC ";
+        //printAMAC(aMAC1);
+        //std::cout<<" to port "<<nextHop<<std::endl;
+        if(nextHop>0)
+            send(aFrame, "port$o", nextHop);
     }
     else if(strcmp(msg->getName(),"C2S")==0)
     {     
@@ -133,6 +145,42 @@ void node::handleMessage(cMessage *msg)
         else
             send(aFrame, "port$o", nextHop);
     }
+    else if(strcmp(msg->getName(),"LinkFailure")==0)
+    {
+        int arrivalPort=msg->getArrivalGate()->getIndex();
+        dismantleAndBroadcastAllAMAC(arrivalPort);
+    }
+}
+
+int node::getFirstAMAC(AFrame* aFrame)//Returns upstream hop and populates aMAC
+{
+    int nextHopUpstream=-1;
+    std::cout<<"getFirstAMAC.";
+
+    std::cout<<std::endl;
+    for(int i=0;i<breadth;i++)//check AMAClist of each port to see if received AMAC was originated from this upstream port
+    {
+        if(portAMACListArray[i]!=nullptr)
+        {
+            nextHopUpstream=i;
+            std::vector<AMAC> *portAMACList=portAMACListArray[i];
+            for(int j=0;j<portAMACList->size();j++)//check all AMAC associated with this port
+            {
+                AMAC portAMAC=portAMACList->at(j);
+                aFrame->setLevel(portAMAC.level);
+                for(int k=0;k<portAMAC.level;k++)//Copy octets
+                {
+                    aFrame->setAMAC(k,portAMAC.octets[k]);
+                }
+                //std::cout<<"Selected AMAC ";
+                //printAMAC(portAMAC);
+                //std::cout<<std::endl;
+                break;
+            }
+            break;
+        }
+    }
+    return nextHopUpstream;
 }
 
 bool node::isLoopFreeAMAC(AMAC aMAC)
@@ -298,6 +346,68 @@ int node::getNextHopDownstream(AMAC aMAC, int arrivalPort)
     return nextHopDownstream;
 }
 
+bool node::dismantleAMAC(AMAC aMAC, int arrivalPort)
+{
+    bool foundAndDismantled=false;
+    std::cout<<"Dismantle AMAC. Got AMAC ";
+    printAMAC(aMAC);
+    std::cout<<std::endl;
+    for(int i=arrivalPort;i<=arrivalPort;i++)//check only at arrival port
+    {
+        if(portAMACListArray[i]!=nullptr)
+        {
+            std::vector<AMAC> *portAMACList=portAMACListArray[i];
+            for(int j=0;j<portAMACList->size();j++)//check all AMAC associated with this port
+            {
+                AMAC portAMAC=portAMACList->at(j);
+                //std::cout<<"Matching with port AMAC ";
+                //printAMAC(portAMAC);
+                //std::cout<<std::endl;
+                if(portAMAC.level==aMAC.level)//both levels must be equal for the AMACs to be equal
+                {
+                    bool amacMatch=true;
+                    for(int k=0;k<portAMAC.level;k++)
+                    {
+                        if(portAMAC.octets[k]!=aMAC.octets[k])
+                        {
+                            amacMatch=false;
+                            break;//stop comparing octets
+                        }
+                    }
+                    if(amacMatch)
+                    {
+                        portAMACList->erase(portAMACList->begin()+j);
+                        std::cout<<"Matched and Dismantled."<<std::endl;
+                        foundAndDismantled=true;
+                        break;//stop going through AMAC list
+                    }
+                }
+            }
+        }
+    }
+    return foundAndDismantled;
+}
+
+void node::dismantleAndBroadcastAllAMAC(int failedPort)
+{
+    std::cout<<"Dismantle and broadcast AMAC for port ";
+    std::cout<<failedPort<<std::endl;
+    for(int i=failedPort;i<=failedPort;i++)//check only at arrival port
+    {
+        if(portAMACListArray[i]!=nullptr)
+        {
+            std::vector<AMAC> *portAMACList=portAMACListArray[i];
+            for(int j=0;j<portAMACList->size();j++)//check all AMAC associated with this port
+            {
+                AMAC portAMAC=portAMACList->at(j);
+                broadcastAFrame(portAMAC, failedPort, false);//Instruct dismantle towards leaf nodes
+            }
+            delete portAMACList;
+            portAMACListArray[i]=nullptr;
+        }
+    }
+}
+
 void node::processAFrame(int arrivalPort, AFrame* aFrame)
 {
 	AMAC aMAC;
@@ -308,7 +418,12 @@ void node::processAFrame(int arrivalPort, AFrame* aFrame)
 		aMAC.octets[i]=aFrame->getAMAC(i);
 	}
 	bool amacIsLoopFree=isLoopFreeAMAC(aMAC);//Check if AMAC is loop free
-	if(amacIsLoopFree)
+	if(aFrame->getAddAMAC()==false)//Dismantle AMAC
+	{
+	    if(dismantleAMAC(aMAC, arrivalPort))
+	        broadcastAFrame(aMAC, arrivalPort, false);//Broadcast AMAC dismantle message
+	}
+	else if(amacIsLoopFree)//Add AMAC if loop free
 	{
             if(N<=0 || numberOfLearnedAMACs<N)//Skip if we have already learned N AMACs
             {
@@ -348,7 +463,7 @@ void node::broadcastAFrameAsRoot(int aRoot, int arrivalPort)
     }
 }
 
-void node::broadcastAFrame(AMAC aMAC, int arrivalPort)
+void node::broadcastAFrame(AMAC aMAC, int arrivalPort, bool addAMAC)
 {
     //std::cout<<"Number of ports: "<<numberOfPorts<<std::endl;
     for(int i=0;i<numberOfPorts;i++)
@@ -357,7 +472,7 @@ void node::broadcastAFrame(AMAC aMAC, int arrivalPort)
         {
             AFrame* aFrame=new AFrame("AMAC");
             aFrame->setLevel(aMAC.level+1);//Increment level by 1
-
+            aFrame->setAddAMAC(addAMAC);
             for(int j=0;j<aMAC.level;j++)
             {
                 aFrame->setAMAC(j,aMAC.octets[j]);//Copy received AMAC

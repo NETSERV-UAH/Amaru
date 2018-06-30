@@ -54,22 +54,24 @@ void pktDropper::handleMessage(cMessage *msg)
     std::cout<<"Message arrived. Node:  "<<getName()<<" Message Type: "<<msg->getName()<<std::endl;
     if(strcmp(msg->getName(),"failureNotificationLoopMsg")==0)
     {
-        cMessage *msg = new cMessage("LinkFailure");//Notify adjacent nodes of link failure
-        send(msg, "port$o", 0);//notify failure in both direction
-        send(msg, "port$o", 1);
+        cMessage *msg1 = new cMessage("LinkFailure");//Notify adjacent nodes of link failure
+        send(msg1, "port$o", 0);//notify failure in both direction
+        send(msg1->dup(), "port$o", 1);
         delete msg;
     }
-    if(strcmp(msg->getName(),"restoreNotificationLoopMsg")==0)
+    else if(strcmp(msg->getName(),"restoreNotificationLoopMsg")==0)
     {
-        cMessage *msg = new cMessage("LinkRestore");//Notify adjacent nodes of link failure
-        send(msg, "port$o", 0);//notify failure in both direction
-        send(msg, "port$o", 1);
-        delete msg;
+        //cMessage *msg2 = new cMessage("LinkRestore");//Notify adjacent nodes of link failure
+        //send(msg2, "port$o", 0);//notify failure in both direction
+        //send(msg2->dup(), "port$o", 1);
+        //delete msg;
     }
     else if(strcmp(msg->getName(),"packetDropStartLoopMsg")==0)
     {
         isDropping=true;
+        std::cout<<"Set isDropping to true"<<std::endl;
         delete msg;
+        std::cout<<"Loopback message deleted"<<std::endl;
     }
     else if(strcmp(msg->getName(),"packetDropEndLoopMsg")==0)
     {
