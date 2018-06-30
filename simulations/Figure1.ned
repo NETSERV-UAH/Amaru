@@ -16,12 +16,14 @@
 package amaru.simulations;
 
 import amaru.node;
+import amaru.pktDropper;
+import amaru.pktgen;
 import amaru.sdnController;
 
 
 network Figure1
 {
-    @display("bgb=417,365");
+    @display("bgb=428,387");
     submodules:
         sdnController: sdnController {
             @display("p=71,50");
@@ -51,20 +53,32 @@ network Figure1
             @display("p=183,290");
         }
         s9: node {
-            @display("p=284,290");
+            @display("p=317,304");
         }
-   connections:
+        pktDropper6_9: pktDropper {
+            @display("p=349,236");
+        }
+        pktDropper8_9: pktDropper {
+            @display("p=252,336");
+        }
+        pktgen: pktgen {
+            @display("p=388,336");
+        }
+    connections:
         sdnController.port++ <--> {  delay = 1s; } <--> s1.port++;
         s1.port++ <--> {  delay = 1s; } <--> s2.port++;
         s2.port++ <--> {  delay = 1s; } <--> s3.port++;
         s4.port++ <--> {  delay = 1s; } <--> s5.port++;
         s5.port++ <--> {  delay = 1s; } <--> s6.port++;
         s7.port++ <--> {  delay = 1s; } <--> s8.port++;
-        s8.port++ <--> {  delay = 1s; } <--> s9.port++;
+        s8.port++ <--> {  delay = 1s; } <--> pktDropper8_9.port++;
+        s9.port++ <--> {  delay = 1s; } <--> pktDropper8_9.port++;
         s1.port++ <--> {  delay = 1s; } <--> s4.port++;
         s4.port++ <--> {  delay = 1s; } <--> s7.port++;
         s2.port++ <--> {  delay = 1s; } <--> s5.port++;
         s5.port++ <--> {  delay = 1s; } <--> s8.port++;
         s3.port++ <--> {  delay = 1s; } <--> s6.port++;
-        s6.port++ <--> {  delay = 1s; } <--> s9.port++;
+        s6.port++ <--> {  delay = 1s; } <--> pktDropper6_9.port++;
+        s9.port++ <--> {  delay = 1s; } <--> pktDropper6_9.port++;
+        s9.port++ <--> {  delay = 1s; } <--> pktgen.port;
 }
