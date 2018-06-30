@@ -1,4 +1,0 @@
-#!/bin/sh
-cd `dirname $0`
-../src/amaru -n .:../src $*
-# for shared lib, use: opp_run -l ../src/amaru -n .:../src $*
