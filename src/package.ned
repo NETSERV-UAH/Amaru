@@ -1,3 +1,0 @@
-package amaru;
-
-@license(LGPL);
