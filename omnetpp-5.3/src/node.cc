@@ -14,6 +14,7 @@ class node : public cSimpleModule
     bool isARoot;
     int N=0; //Max number of AMACs - When a switch reaches this number (if set to nonzero), it starts discarding new frames and does not learn anymore.
     int L=0; //L: Preffix variation length - learn the N (if set to nonzero) first that vary in the prefix of length L
+    int P=0; //Learn up to P (when set to >0) AMACs per port irrespective of the value of N and L
     static const int depth=16;
     static const int breadth=8;
     struct AMAC
@@ -48,7 +49,10 @@ class node : public cSimpleModule
 Define_Module(node);
 void node::initialize()
 {
-    isARoot=false;
+    isARoot=par("isARoot");
+    N=par("N");
+    L=par("L");
+    P=par("P");
     numberOfPorts=gateSize("port$o");
     EV<<"Initialize: num ports "<<numberOfPorts<<"\n";
     std::cout<<"Initializing... switch: "<<getName()<<" number of ports: "<<numberOfPorts<<std::endl;
@@ -425,21 +429,24 @@ void node::processAFrame(int arrivalPort, AFrame* aFrame)
 	}
 	else if(amacIsLoopFree)//Add AMAC if loop free
 	{
-            if(N<=0 || numberOfLearnedAMACs<N)//Skip if we have already learned N AMACs
-            {
-                if(portAMACListArray[arrivalPort]==nullptr)
-                {
-                    portAMACListArray[arrivalPort]=new std::vector<AMAC>();
-                }
-                portAMACListArray[arrivalPort]->push_back(aMAC);//add AMAC to port
-                numberOfLearnedAMACs++;
-                if(aMAC.level<depth)
-                    broadcastAFrame(aMAC, arrivalPort);//Send out to all ports except the receiving port
-            }
-            else
-            {
-                std::cout<<"Not learning due to max number of AMAC ("<<N<<") already learned."<<std::endl;
-            }
+	    if(portAMACListArray[arrivalPort]==nullptr)
+        {
+            portAMACListArray[arrivalPort]=new std::vector<AMAC>();
+        }
+
+	    int numberOfAMACsLearnedForThisPort=portAMACListArray[arrivalPort]->size();
+
+        if(numberOfAMACsLearnedForThisPort<P || (P==0&&(N<=0 || numberOfLearnedAMACs<N)))//Skip if we have already learned N AMACs
+        {
+            portAMACListArray[arrivalPort]->push_back(aMAC);//add AMAC to port
+            numberOfLearnedAMACs++;
+            if(aMAC.level<depth)
+                broadcastAFrame(aMAC, arrivalPort);//Send out to all ports except the receiving port
+        }
+        else
+        {
+            std::cout<<"Not learning due to max number of AMAC ("<<N<<") already learned."<<std::endl;
+        }
 	}
 	else
 	{
