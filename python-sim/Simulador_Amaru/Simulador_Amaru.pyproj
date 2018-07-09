@@ -1,0 +1,73 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>ffd44e3f-e85e-42b2-bed7-068e82d3e5f3</ProjectGuid>
+    <ProjectHome>.</ProjectHome>
+    <StartupFile>main_Amaru.py</StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <Name>Simulador_Amaru</Name>
+    <RootNamespace>Simulador_Amaru</RootNamespace>
+    <InterpreterId>Global|PythonCore|2.7-32</InterpreterId>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AmaruAddressAssignWithSyn.py" />
+    <Compile Include="main_Amaru.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AmaruAddressAssignWithOutSyn.py" />
+    <Compile Include="Parser.py">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="Global|PythonCore|2.7-32" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Topologias\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Topologias\rt-barabasi-10-3_1.top" />
+    <Content Include="Topologias\rt-barabasi-10-5_1.top" />
+    <Content Include="Topologias\rt-barabasi-100-10_1.top" />
+    <Content Include="Topologias\rt-barabasi-14-7_1.top" />
+    <Content Include="Topologias\rt-barabasi-15-3_1.top" />
+    <Content Include="Topologias\rt-barabasi-15-5_1.top" />
+    <Content Include="Topologias\rt-barabasi-15-7_1.top" />
+    <Content Include="Topologias\rt-barabasi-30-3_1.top" />
+    <Content Include="Topologias\rt-barabasi-40-4_1.top" />
+    <Content Include="Topologias\rt-barabasi-50-3_1.top" />
+    <Content Include="Topologias\rt-barabasi-7-6_1.top" />
+    <Content Include="Topologias\rt-barabasi-70-3_1.top" />
+    <Content Include="Topologias\rt-waxman-10-3_1.top" />
+    <Content Include="Topologias\rt-waxman-10-4_1.top" />
+    <Content Include="Topologias\rt-waxman-12-5_1.top" />
+    <Content Include="Topologias\rt-waxman-15-7_1.top" />
+    <Content Include="Topologias\rt-waxman-20-5_1.top" />
+    <Content Include="Topologias\rt-waxman-30-3_1.top" />
+    <Content Include="Topologias\rt-waxman-35-6_1.top" />
+    <Content Include="Topologias\rt-waxman-50-8_1.top" />
+    <Content Include="Topologias\rt-waxman-50-8_2.top" />
+    <Content Include="Topologias\rt-waxman-60-8_1.top" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
+  <!-- Uncomment the CoreCompile target to enable the Build command in
+       Visual Studio and specify your pre- and post-build commands in
+       the BeforeBuild and AfterBuild targets below. -->
+  <!--<Target Name="CoreCompile" />-->
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>
