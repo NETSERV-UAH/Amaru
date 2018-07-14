@@ -8,6 +8,8 @@ using namespace omnetpp;
 
 class sdnController : public cSimpleModule
 {
+private:
+    cOutVector recvVector;
   protected:
     // The following redefined virtual function holds the algorithm.
     virtual void initialize() override;
@@ -30,16 +32,20 @@ void sdnController::initialize()
     }
     
     //send test C2S message: will be moved from here
-    AFrame* aFrame1=new AFrame("C2S");
+    /*AFrame* aFrame1=new AFrame("C2S");
     aFrame1->setLevel(4);
     aFrame1->setAMAC(0,0);
     aFrame1->setAMAC(1,2);
     aFrame1->setAMAC(2,2);
     aFrame1->setAMAC(3,0);                
-    sendDelayed(aFrame1, 20, "port$o", 0); 
+    sendDelayed(aFrame1, 20, "port$o", 0);*/
 }
 void sdnController::handleMessage(cMessage *msg)
 {
+    if(strcmp(msg->getName(),"S2C")==0)
+    {
+        recvVector.record(simTime()/100);
+    }
     delete msg;
 }
 

@@ -21,7 +21,8 @@ simple pktDropper
         double dropStartTime=default(0);
     	double dropDuration=default(0); 
     	bool shouldDropPacket=default(false);
-    	double failureDetectionDelay=default(0);
+    	bool shouldRecordStat=default(false);
+    	//double failureDetectionDelay=default(0);
     gates:
         inout port[] @loose;
 }

@@ -20,13 +20,13 @@ private:
 Define_Module(pktgen);
 void pktgen::initialize()
 {
-    cMessage *msg = new cMessage("S2C");
+    //cMessage *msg = new cMessage("S2C");
     packetsSent=0;
     packetsToSend=par("packetsToSend").longValue();
     packetDelay=par("packetDelay");
     packetSendStartTime=par("packetSendStartTime").doubleValue();
 
-    double chaos=getRNG(0)->doubleRand();
+    //double chaos=getRNG(0)->doubleRand();
     AFrame* aFrame1=new AFrame("S2C");
     aFrame1->setLevel(-1);
     /*aFrame1->setAMAC(0,0);
@@ -52,4 +52,5 @@ void pktgen::handleMessage(cMessage *msg)
             scheduleAt(simTime()+chaos*10*packetDelay,msg->dup());
         }
     }
+    delete msg;
 }
