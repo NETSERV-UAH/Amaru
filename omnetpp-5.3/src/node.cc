@@ -116,6 +116,9 @@ void node::handleMessage(cMessage *msg)
         int nextHop;
         if(receivedLevel==-1)//From pktGen; have to populate aFrame
         {
+            //aFrame=new AFrame();
+            //delete msg;
+            std::cout<<"From pktGen"<<std::endl;
             nextHop=getFirstAMAC(aFrame);
         }
         else
@@ -174,6 +177,7 @@ int node::getFirstAMAC(AFrame* aFrame)//Returns upstream hop and populates aMAC
         {
             nextHopUpstream=i;
             std::vector<AMAC> *portAMACList=portAMACListArray[i];
+            std::cout<<"port "<<i<<" AMAC List size"<<portAMACList->size()<<std::endl;
             for(int j=0;j<portAMACList->size();j++)//check all AMAC associated with this port
             {
                 AMAC portAMAC=portAMACList->at(j);
@@ -235,6 +239,7 @@ bool node::isLoopFreeAMAC(AMAC aMAC)
 
 void node::printAMAC(AMAC aMAC)
 {
+    std::cout<<"(AMAC) Level "<<aMAC.level<<": ";
     for(int i=0;i<aMAC.level;i++)
     {
         std::cout<<aMAC.octets[i]<<".";
@@ -244,6 +249,7 @@ void node::printAMAC(AMAC aMAC)
 
 void node::printAMAC(AFrame *aFrame)
 {
+    std::cout<<"(AFRAME) Level "<<aFrame->getLevel()<<": ";
     for(int i=0;i<aFrame->getLevel();i++)
     {
         std::cout<<aFrame->getAMAC(i)<<".";
@@ -388,6 +394,11 @@ bool node::dismantleAMAC(AMAC aMAC, int arrivalPort)
                     if(amacMatch)
                     {
                         portAMACList->erase(portAMACList->begin()+j);
+                        if(portAMACList->size()==0)
+                        {
+                            delete portAMACList;
+                            portAMACListArray[i]=nullptr;
+                        }
                         std::cout<<"Matched and Dismantled."<<std::endl;
                         foundAndDismantled=true;
                         break;//stop going through AMAC list
