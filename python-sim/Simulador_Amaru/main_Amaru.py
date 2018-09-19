@@ -78,6 +78,13 @@ def printOrderedTop(top):
 		text += str(node)+" >> "+ str(top[node])+"\n"
 	return text
 
+def cal_media (topologia):
+    Suma_direcciones = 0
+    for node in topologia.keys():
+        Suma_direcciones += len(topologia[node])
+        
+    return float(float(Suma_direcciones-1)/float(len(topologia.keys())-1))
+
 def save_data_into_file(file, topology,Syn_amaru, prefijo, num_max_dir):
     aux = "Con-Sincronismo"
     if Syn_amaru != 'y' and Syn_amaru != 'Y':
@@ -87,7 +94,7 @@ def save_data_into_file(file, topology,Syn_amaru, prefijo, num_max_dir):
     f_save.write(topology)
     f_save.closed
 
-def save_stats(main_data, num_pkt, Syn_amaru, prefijo, num_max_dir):
+def save_stats(main_data, num_pkt, Syn_amaru, prefijo, num_max_dir, topologia):
     aux = "Con-Sincronismo"
     if Syn_amaru != 'y' and Syn_amaru != 'Y':
         aux = "Sin-Sincronismo"
@@ -97,7 +104,8 @@ def save_stats(main_data, num_pkt, Syn_amaru, prefijo, num_max_dir):
     num_nodes = main_data.split("-")[2]
     nodes_grades = main_data.split("-")[3].split("_")[0]
     semillas = main_data.split("-")[3].split("_")[1].split(".")[0]
-    f_save.write(str(name_topology)+"|"+str(semillas)+"|"+str(num_nodes)+"|"+str(nodes_grades)+"|"+str(num_pkt)+"|"+str(prefijo)+"|"+str(num_max_dir)+"|"+str(aux)+"\n")
+    media = cal_media(topologia)
+    f_save.write(str(name_topology)+"|"+str(semillas)+"|"+str(num_nodes)+"|"+str(nodes_grades)+"|"+str(num_pkt)+"|"+str(prefijo)+"|"+str(num_max_dir)+"|"+str(aux)+"|"+str(media)+"\n")
     f_save.closed
 
 
@@ -136,7 +144,7 @@ if __name__ == '__main__':
     for num_prefijo in range(2, num_max_prefijo):
         for num_dir in range(2, num_max_direcciones):
             #print filenames
-            for name in filenames:
+            for name in sorted(filenames):
                 filename = path + '/' + name
                 print
                 print '==============================================================='
@@ -153,5 +161,5 @@ if __name__ == '__main__':
                     AmaruAddress, num_pkt = assignAmaruIDsWithOutSyn(I, num_prefijo, num_dir)
                 print "Num pkt en la red = ", num_pkt
                 #guardamos los datos obtenidos
-                save_data_into_file(filename.split("/")[2].split(".")[0], printOrderedTop(AmaruAddress), Syn_amaru, num_prefijo, num_dir)
-                save_stats(filename.split("/")[2], num_pkt, Syn_amaru, num_prefijo, num_dir)
+                #save_data_into_file(filename.split("/")[2].split(".")[0], printOrderedTop(AmaruAddress), Syn_amaru, num_prefijo, num_dir)
+                save_stats(filename.split("/")[2], num_pkt, Syn_amaru, num_prefijo, num_dir, AmaruAddress)
