@@ -212,7 +212,7 @@ bool node::isLoopFreeAMAC(AMAC aMAC)
                 if(portAMAC.level<=aMAC.level)
                 {
                     bool prefixMatch=true;
-                    int maxSearchLevel=(L==0?portAMAC.level:L);
+                    int maxSearchLevel=(L==0?portAMAC.level:fmin(L,portAMAC.level));
                     for(int k=0;k<maxSearchLevel;k++)
                     {
                         if(portAMAC.octets[k]!=aMAC.octets[k])
@@ -520,8 +520,8 @@ void node::finish()
     {
         if(portAMACListArray[i]!=nullptr)
         {
-            //delete portAMACListArray[i];
-           // portAMACListArray[i]=nullptr;
+            delete portAMACListArray[i];
+            portAMACListArray[i]=nullptr;
         }
     }
 }
