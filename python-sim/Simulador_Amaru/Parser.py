@@ -10,7 +10,7 @@ def parser_brite_to_sim_python(Directorio):
     path = os.getcwd()+"\\"+Directorio
     #name_topo
     folders = os.listdir(path)
-    print folders
+    #print (str(folders))
     for folder in folders:
         num_nodes_topo = 0;
         #primero leemos el numero de nodos que tiene la topologia
@@ -20,10 +20,9 @@ def parser_brite_to_sim_python(Directorio):
                 datos = line.split(";")
                 if (num_nodes_topo < int(datos[0])):
                     num_nodes_topo = int(datos[0])
-            print "Numero de nodos en la topologia: "+str(num_nodes_topo)
+            print ("Numero de nodos en la topologia: "+str(num_nodes_topo))
         except:
-            print "Error al leer los nodos Archivo: "+path+"\\"+folder+"\\"+file_nodes+" no encontrado"
-
+            print ("Error al leer los nodos Archivo: "+str(path)+"\\"+str(folder)+"\\"+str(file_nodes)+" no encontrado")
         try:
             for num_node in range(1,num_nodes_topo+1):
                 topology_original = open(path+"\\"+folder+"\\"+file_edges, 'r')
@@ -43,7 +42,7 @@ def parser_brite_to_sim_python(Directorio):
                 topology_original.closed
                 topology_parseada.closed
         except:
-            print "Error al leer los enlaces Archivo: "+path+"\\"+folder+"\\"+file_edges+" no encontrado"
+            print ("Error al leer los enlaces Archivo: "+path+"\\"+folder+"\\"+file_edges+" no encontrado")
 
 
 if __name__ == '__main__':

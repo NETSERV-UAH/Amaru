@@ -147,8 +147,8 @@ if __name__ == '__main__':
             for name in sorted(filenames):
                 filename = path + '/' + name
                 print
-                print '==============================================================='
-                print 'Archivo de topologia: ', name
+                print ('===============================================================')
+                print ('Archivo de topologia: ' + str(name))
                 print
                 # Desde el fichero de entrada lee la topologia de enlaces
                 I = readNetFromFile(filename)
@@ -158,8 +158,10 @@ if __name__ == '__main__':
                     num_prefijo = 0
                     num_dir = 0
                 else:
-                    AmaruAddress, num_pkt = assignAmaruIDsWithOutSyn(I, num_prefijo, num_dir)
-                print "Num pkt en la red = ", num_pkt
+                    AmaruAddress, num_pkt, num_pkt_gen_total = assignAmaruIDsWithOutSyn(I, num_prefijo, num_dir)
+                print ("Num pkt en la red = "+str(num_pkt))
+                print ("Num pkt Generados = "+str(num_pkt_gen_total))
                 #guardamos los datos obtenidos
                 #save_data_into_file(filename.split("/")[2].split(".")[0], printOrderedTop(AmaruAddress), Syn_amaru, num_prefijo, num_dir)
-                save_stats(filename.split("/")[2], num_pkt, Syn_amaru, num_prefijo, num_dir, AmaruAddress)
+                save_stats(filename.split("/")[2], num_pkt, Syn_amaru, num_prefijo, num_dir, AmaruAddress);
+                #raw_input('Presione Tecla para continuar')

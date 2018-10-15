@@ -42,7 +42,7 @@ def assignAmaruIDsWithSyn(net):
 		#	AMnet[node] = addr + AMnet[node]
 		AmaruAddress[node].append(addr)
 		i += 1
-	print 'Core nodes: ', coreNodeList, AmaruAddress
+	print ('Core nodes: ', coreNodeList, AmaruAddress)
 
 	pendingSetAddressMessages = OrderedDict()
 	# key=srcNode+addressAssign; value=namedtuple(destNode, srcNode, addressAssigned)
@@ -52,27 +52,28 @@ def assignAmaruIDsWithSyn(net):
 	pkt = 0;
 	num_pkt = 0; #numero de paquetes en la red
 	for coreNode in coreNodeList:
-		print '-----------------------'
-		print 'Core node: ', coreNode
-		print
+		print ('-----------------------')
+		print ('Core node: ', coreNode)
+		print ('')
 		
 		assignPortsToCoreNeighbors(coreNode, net)
-		print 'AMnet[', coreNode, ']', AMnet[coreNode]
+		print ('AMnet[', coreNode, ']', AMnet[coreNode])
+		print ('AMnet[', coreNode, ']', AMnet[coreNode])
 		
 		#i = 1
 		for neighbor in net[coreNode].keys():
 			#AMaddress = AmaruAddress[coreNode][0] + AMnet[coreNode][neighbor] + '.'
 			AMaddress = AMnet[coreNode][neighbor] + '.'
-			print AMaddress,
+			print (AMaddress,)
 			setMsgInfo = addrRecord(neighbor, coreNode, AMaddress)
-			print setMsgInfo
+			print (setMsgInfo)
 			pendingSetAddressMessages[neighbor + '+' + AMaddress] = setMsgInfo
 
 		while len(pendingSetAddressMessages):
 			node = processSetAddressMessage(pendingSetAddressMessages)
 			if not node.startswith('h'):
 				num_pkt = num_pkt + 1
-				print "num_pkt: ", num_pkt, "From node: ", node
+				print ("num_pkt: ", num_pkt, "From node: ", node)
 		
 	return AmaruAddress, num_pkt
 
@@ -83,22 +84,22 @@ def assignPortsToCoreNeighbors(core, net):
 		port = int(AMnet[core][neighbor].split('.')[1])
 		if port > maxPortInUse:
 			maxPortInUse = port
-	print 'Max port in use', maxPortInUse
-	print AMnet[core]
+	print ('Max port in use', maxPortInUse)
+	print (AMnet[core])
 
 	for neighbor in net[core]:
 		if not AMnet[core].has_key(neighbor):
 			AMnet[core][neighbor]= AmaruAddress[core][0] + str(maxPortInUse + 1)
 			maxPortInUse += 1
-			print 'neighbor', neighbor, AMnet[core][neighbor]
+			print ('neighbor', neighbor, AMnet[core][neighbor])
 
 def printOrderedTop(top):
 	# top is a dict of node:addressList
 	nodeList = top.keys()
 	nodeList.sort()
-	print nodeList  
+	print (nodeList)
 	for node in nodeList:
-		print node,'>>', top[node]
+		print (node,'>>', top[node])
 
 def processSetAddressMessage(msgList):
 
@@ -110,14 +111,14 @@ def processSetAddressMessage(msgList):
 	msgSourceNode = val.src
 	addr = val.addr
 
-	print '------'
+	#print '------'
 	if node.startswith('0s0'): #Solo se ejecuta como core el controlador
-		print 'P-'+ node, ' is a core node,', 'src=', msgSourceNode, 'new assign=', addr
+		#print 'P-'+ node, ' is a core node,', 'src=', msgSourceNode, 'new assign=', addr
 		processAddressInCoreNode(msgList, node, msgSourceNode, addr)
 	#elif node.startswith('h'):
 	#	print node, ' is a host,', 'new assign=', addr
 	else:
-		print node, ' is a middle node,', 'new assign=', addr
+		#print node, ' is a middle node,', 'new assign=', addr
 		processAddressInMiddleNode(msgList, node, msgSourceNode, addr)
 	return node;
 
@@ -125,45 +126,45 @@ def processAddressInCoreNode(msgList, core, src, addr):
 
 	coreSrc = addr[0] # solo me coje el primer digito del prefijo
 	#coreSrc = int(addr.split('.')[0]) #JAH: Cambio esta sentencia para coger el prefijo completo
-	print 'Core Source->', coreSrc,
+	#print 'Core Source->', coreSrc,
 	newPort = int(addr.split('.')[1])
 
-	print 'New port->', newPort
+	#print 'New port->', newPort
  
 	if coreSrc < AmaruAddress[core][0][0]: # lower core
-		print 'lower core'
+		#print 'lower core'
 		
 		if len(AMnet[core]) == 0:
-			print 'AMnet de', core, 'vacio'
+			#print 'AMnet de', core, 'vacio'
 			AMnet[core][src] = AmaruAddress[core][0] + str(newPort)
 
 		elif not AMnet[core].has_key(src):
-			print 'no key', src, AMnet[core]
+			#print 'no key', src, AMnet[core]
 			
 			foundPort = False
 			for i in AMnet[core].keys():
 				iPort = int(AMnet[core][i].split('.')[1])
 				foundPort = iPort == newPort
-				print foundPort
+				#print foundPort
 				if foundPort: break
 			
 			if foundPort:  	# we need to create a new self of core
 				i = 1
 				newId = AmaruAddress[core][0].split('.')[0] + str(i) + '.'
-				print 'new id', newId
+				#print 'new id', newId
 				while newId in AmaruAddress[core]:
 					i = i + 1
 					newId = AmaruAddress[core][0].split('.')[0] + str(i) + '.'
 				AmaruAddress[core].append(newId)
-				print 'New self', AmaruAddress[core]
+				#print 'New self', AmaruAddress[core]
 				AMnet[core][src] = newId + str(newPort)
 			else:			# port not found no need to creare a new self
 				AMnet[core][src] = AmaruAddress[core][0] + str(newPort)
-			print 'No old port, new port =', AMnet[core][src]
+			#print 'No old port, new port =', AMnet[core][src]
 
 		else:
 			oldPort = int(AMnet[core][src].split('.')[1])
-			print 'old port->', oldPort
+			#print 'old port->', oldPort
 
 			if newPort < oldPort:
 				
@@ -180,46 +181,46 @@ def processAddressInCoreNode(msgList, core, src, addr):
 						i = i + 1
 						newId = AmaruAddress[core][0].split('.')[0] + str(i) + '.'
 					AmaruAddress[core].append(newId)
-					print 'New self', AmaruAddress[core]
+					#print 'New self', AmaruAddress[core]
 					AMnet[core][src] = newId + str(newPort)
 				else:			# port not found no need to creare a new self
 					AMnet[core][src] = AmaruAddress[core][0] + str(newPort)
 
 	elif (coreSrc == AmaruAddress[core][0][0]): 	#same core
 	
-		print 'Same core', 'portAddr=', AMnet[core][src],
+		#print 'Same core', 'portAddr=', AMnet[core][src],
 		aux1 = int(AMnet[core][src].split('.')[0])
 		aux2 = int(coreSrc)
-		print aux1, aux2
+		#print aux1, aux2
 		if  aux1 == aux2:
 			newSelf = coreSrc + AMnet[core][src].split('.')[1] + '.'
 			if (newSelf not in AmaruAddress[core]) and (len(AmaruAddress[core]) < len(AMnet[core])):
-				print 'NewSelf->', newSelf
+				#print 'NewSelf->', newSelf
 				AmaruAddress[core].append(newSelf)
 
 			oldPort = int(AMnet[core][src].split('.')[1])
-			print 'old port->', oldPort
+			#print 'old port->', oldPort
 
 			if newPort < oldPort:
 				AMnet[core][src] = newSelf + str(newPort)
 				AMaddress = newSelf + str(newPort) + '.' 
 				setMsgInfo = addrRecord(src, core, AMaddress)
-				print setMsgInfo
+				#print setMsgInfo
 				msgList[src + '+' + AMaddress] = setMsgInfo
 		else:
-			print 'Port already unfolded'
+			print ('Port already unfolded')
 
 			oldPort = int(AMnet[core][src].split('.')[1])
-			print 'old port->', oldPort
+			#print 'old port->', oldPort
 
 			if newPort < oldPort:
 				AMnet[core][src] = AMnet[core][src].split('.')[0] + '.' + str(newPort)
 				AMaddress = AMnet[core][src] + '.' 
 				setMsgInfo = addrRecord(src, core, AMaddress)
-				print setMsgInfo
+				#print setMsgInfo
 				msgList[src + '+' + AMaddress] = setMsgInfo
 	else:
-		print 'Greater core'
+		print ('Greater core')
 
 def processNewSuffix(node, addr, src):
 	"""
@@ -244,9 +245,9 @@ def processAddressInMiddleNode(msgList, node, src, addr):
 
 	shorterAddress, lowerAddress, lowerSuffix, equalLengthAddress, equalSuffix, diff_core, pos_newaddr, equalAddr = compareOldAndNewAddresses(addr, node)
 
-	print "AMnet[node]: ", AMnet[node]
+	#print "AMnet[node]: ", AMnet[node]
 	if equalAddr:
-		print "Reciev the samen direcction"
+	#	print "Reciev the samen direcction"
 		return
 
 	elif shorterAddress or (lowerAddress and equalLengthAddress):
@@ -257,11 +258,11 @@ def processAddressInMiddleNode(msgList, node, src, addr):
 		if pos_newaddr == 0:
 			AmaruAddress[node] = []
 			AmaruAddress[node].append(addr)
-			print 'New primary', AmaruAddress[node]
+			#print 'New primary', AmaruAddress[node]
 			if (len(addr.split('.'))-1) > (int(node[0]) + 1):
 				processNewSuffix(node, addr, src) 
 		else:
-			print 'Swap Virtual Mac', AmaruAddress[node]
+			#print 'Swap Virtual Mac', AmaruAddress[node]
 			AmaruAddress[node].pop(pos_newaddr)
 			AmaruAddress[node].insert(pos_newaddr,addr)
 			#deberiamos propagar el nuevo
@@ -270,11 +271,11 @@ def processAddressInMiddleNode(msgList, node, src, addr):
 			if item != src:
 				AMaddress = AmaruAddress[node][pos_newaddr] + AMnet[node][item] + '.'
 				setMsgInfo = addrRecord(item, node, AMaddress)
-				print setMsgInfo
+				#print setMsgInfo
 				msgList[item + '+' + AMaddress] = setMsgInfo
 		
 			
-		print AMnet[node]
+		#print AMnet[node]
 	elif equalLengthAddress:
 		if equalSuffix or diff_core:
 		# acceptSecondaryAddr(addr, node, 'secondary')
@@ -283,12 +284,12 @@ def processAddressInMiddleNode(msgList, node, src, addr):
 			# 2. forward address to neighbors			
 
 			AmaruAddress[node].append(addr)
-			print 'New secondary', AmaruAddress[node]  
+		#	print 'New secondary', AmaruAddress[node]  
 			for item in AMnet[node].keys():
 				if item != src:
 					AMaddress = addr + AMnet[node][item] + '.' 
 					setMsgInfo = addrRecord(item, node, AMaddress)
-					print setMsgInfo
+		#			print setMsgInfo
 					msgList[item + '+' + AMaddress] = setMsgInfo
 
 		else:
@@ -299,38 +300,38 @@ def processAddressInMiddleNode(msgList, node, src, addr):
 			# 2.2 Asignamos el nuevo switch al puerto
 			# 3 Descartamos el reenvio
 			port_in = 0;
-			print "No equalSuffix"
+		#	print "No equalSuffix"
 			if (int(AmaruAddress[node][0].split('.')[0]) >= int(addr.split('.')[0])) and (len(AmaruAddress[node][0].split('.')) == len(addr.split('.'))):
 				if int(AMnet[node][src]) > int(addr.split('.')[int(len(addr.split('.'))/2)]) or (int(addr.split('.')[0]) == 1):
 					port_in = addr.split('.')[int(len(addr.split('.'))/2)]
-					print "port_in :", port_in;
+		#			print "port_in :", port_in;
 			if port_in != 0:
 				for switch, port in AMnet[node].iteritems():
 					if port == port_in and src != switch:
 						port_up = puerto_max(AMnet[node])
 						AMnet[node][switch] = str(port_up)
 					AMnet[node][src] = port_in #asignamos ese valor
-			print AMnet[node]
+		#	print AMnet[node]
 			
 	elif lowerSuffix: # or equalSuffix:
 		# acceptNewSuffix(addr, node, 'suffix')
 			# 1. process suffix to update port numbers if necessary
 			# 2. forward address to 'upper' neighbors
-		print 'New Suffix', addr
+		#print 'New Suffix', addr
 		if (int(AmaruAddress[node][0].split('.')[0]) >= int(addr.split('.')[0])) and (len(addr.split('.')) - len(AmaruAddress[node][0].split('.')) <= 2 ):
 			processNewSuffix(node, addr, src)
-			print AMnet[node]
+		#	print AMnet[node]
 		for item in AMnet[node].keys():
 			if item != src and item[0] < node[0]:
 				AMaddress = addr + AMnet[node][item] + '.' 
-				print "len(AmaruAddress[node][0].split('.'))):", len(AmaruAddress[node][0].split('.')), "len(AMaddress.split('.'): ", len(AMaddress.split('.'))
-				print "len(AMaddress.split('.')) - len(AmaruAddress[node][0].split('.'))", len(AMaddress.split('.')) - len(AmaruAddress[node][0].split('.'))
+		#		print "len(AmaruAddress[node][0].split('.'))):", len(AmaruAddress[node][0].split('.')), "len(AMaddress.split('.'): ", len(AMaddress.split('.'))
+		#		print "len(AMaddress.split('.')) - len(AmaruAddress[node][0].split('.'))", len(AMaddress.split('.')) - len(AmaruAddress[node][0].split('.'))
 				if (len(AMaddress.split('.')) - len(AmaruAddress[node][0].split('.'))) <= 3:
 					setMsgInfo = addrRecord(item, node, AMaddress)
-					print setMsgInfo
+					#print setMsgInfo
 					msgList[item + '+' + AMaddress] = setMsgInfo
 		
-	else: print 'nothing to do', addr, 'is greater than', AmaruAddress[node]
+	else: print ('nothing to do', addr, 'is greater than', AmaruAddress[node])
 
 def puerto_max(d):
     #""" a) create a list of the dict's keys and values; 
@@ -383,14 +384,14 @@ def compareOldAndNewAddresses(newAddr, node):
 			suffixIsLower = False
 			suffixIsEqual = False
 				
-		if addrIsShorter: print newAddr, 'is shorter than', oldAddr
-		if addrIsLower: print newAddr, 'is lower than', oldAddr
-		if addrIsEqualLength: print newAddr, 'is equal length than', oldAddr
-		if suffixIsLower: print newAddr, 'has a lower suffix than', oldAddr
-		if suffixIsEqual: print newAddr, 'has an equal suffix than', oldAddr
+		if addrIsShorter: print (newAddr, 'is shorter than', oldAddr)
+		if addrIsLower: print (newAddr, 'is lower than', oldAddr)
+		if addrIsEqualLength: print (newAddr, 'is equal length than', oldAddr)
+		if suffixIsLower: print (newAddr, 'has a lower suffix than', oldAddr)
+		if suffixIsEqual: print (newAddr, 'has an equal suffix than', oldAddr)
 
-		if diffcore: print newAddr, 'has different core than', oldAddr
-		if EqualAddr: print newAddr, "is the same direccion than", oldAddr
+		if diffcore: print (newAddr, 'has different core than', oldAddr)
+		if EqualAddr: print (newAddr, "is the same direccion than", oldAddr)
 
 		
 	return addrIsShorter, addrIsLower, suffixIsLower, addrIsEqualLength, suffixIsEqual, diffcore, pos, EqualAddr
