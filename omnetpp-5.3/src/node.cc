@@ -454,7 +454,8 @@ void node::processAFrame(int arrivalPort, AFrame* aFrame)
 
 	    int numberOfAMACsLearnedForThisPort=portAMACListArray[arrivalPort]->size();
 
-        if(numberOfAMACsLearnedForThisPort<P || (P==0&&(N<=0 || numberOfLearnedAMACs<N)))//Skip if we have already learned N AMACs
+        if((N == 0 && numberOfAMACsLearnedForThisPort<P) || (P==0 && numberOfLearnedAMACs<N) || 
+			(P!=0 && N!=0 && numberOfLearnedAMACs<N && numberOfAMACsLearnedForThisPort<P)) //Skip if we have already learned N AMACs
         {
             portAMACListArray[arrivalPort]->push_back(aMAC);//add AMAC to port
             numberOfLearnedAMACs++;
