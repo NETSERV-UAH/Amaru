@@ -22,3 +22,7 @@ Amaru: Guaranteed resiliency for in-band control in SDN
 5. Run the simulation
 
 > \# ./Amaru -u Cmdenv -n ../simulations:. -f ../simulations/omnetpp.ini
+
+or, to run from graphical user interface (GUI)
+
+> \# ./Amaru -u Tkenv -n ../simulations:. -f ../simulations/omnetpp.ini
