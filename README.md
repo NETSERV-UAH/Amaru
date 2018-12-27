@@ -1,2 +1,2 @@
 # Amaru
-Amaru: Guaranteed resiliency for in-band control in SDN
+Amaru: Plug&play resilient in-band control for SDN
